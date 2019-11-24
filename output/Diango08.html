@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh_cn">
+<head>
+	<title>Django--08Meta常用选项 | ge_ren_bo_ke</title>
+	<meta charset="utf-8" />
+    <meta name="author" content="chen_meng_xu">
+	<link rel="stylesheet" href="/theme/css/franticworld.css" type="text/css" />
+	<link href="/theme/css/pygments.css" rel="stylesheet">
+</head>
+<body background="/theme/img/pattern.png">
+		<div class="nav-banner">
+		<a href="">ge_ren_bo_ke</a>
+		</div>
+		
+		<div class="content">
+
+<div class="metabox">
+	<p class="metayear">小旭</p>
+	<p class="metaday">♥</p>
+	<p class="metayear">小雪</p>
+	<p class="metacategory">一辈子</p>
+</div>
+<div class="arcticlecontentbox">
+	<div class="articlecontent">
+		<a class="articletitle" href="/Diango08.html " >Django--08Meta常用选项</a>
+		<h3>Django模型之Meta常用选项</h3>
+<p>Django模型类的Meta是一个内部类，它用于定义一些Django模型类的行为特性。而可用的选项大致包含以下几类</p>
+<h3>abstract</h3>
+<p>这个属性是定义当前的模型是不是一个抽象类。所谓抽象类是不会对应数据库表的。一般我们用它来归纳一些公共属性字段，然后继承它的子类可以继承这些字段。</p>
+<p>Options.abstract
+如果abstract = True 这个model就是一个抽象类</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+
+
+<span class="k">class</span> <span class="nc">BaseModel</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;大多数模型的父类模型&quot;&quot;&quot;</span>
+    <span class="n">create_time</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;创建时间&#39;</span><span class="p">)</span>
+    <span class="n">update_time</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;修改时间&#39;</span><span class="p">)</span>
+    <span class="n">is_delete</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;删除标记&#39;</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">abstract</span> <span class="o">=</span> <span class="bp">True</span>  <span class="c1"># 抽象模型类</span>
+</pre></div>
+
+
+<h3>db_table</h3>
+<p>db_table是指定自定义数据库表明的。Django有一套默认的按照一定规则生成数据模型对应的数据库表明。
+Options.db_table
+定义该model在数据库中的表名称
+　　db_table = 'Students'
+如果你想使用自定义的表名，可以通过以下该属性
+　　table_name = 'my_owner_table'</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+
+
+<span class="k">class</span> <span class="nc">AreaInfo</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    省市级联</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">area_name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">pid</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;self&quot;</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">db_table</span> <span class="o">=</span> <span class="s2">&quot;areainfo&quot;</span>   <span class="c1"># 创建数据库时，生成的表名</span>
+</pre></div>
+
+
+<h3>verbose_name</h3>
+<p>verbose_name的意思很简单，就是给你的模型类起一个更可读的名字一般定义为中文，我们：
+verbose_name = "学校"</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+
+
+<span class="k">class</span> <span class="nc">AreaInfo</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    省市级联</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">area_name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">pid</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;self&quot;</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">db_table</span> <span class="o">=</span> <span class="s2">&quot;areainfo&quot;</span>   <span class="c1"># 创建数据库时，生成的表名</span>
+        <span class="n">verbose_name</span> <span class="o">=</span> <span class="s2">&quot;省市县&quot;</span>
+</pre></div>
+
+
+<h3>verbose_name_plural</h3>
+<p>这个选项是指定，模型的复数形式是什么，比如：
+verbose_name_plural = "学校"
+如果不指定Django会自动在模型名称后加一个’s’</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+
+
+<span class="k">class</span> <span class="nc">AreaInfo</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    省市级联</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">area_name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">pid</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;self&quot;</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">db_table</span> <span class="o">=</span> <span class="s2">&quot;areainfo&quot;</span>   <span class="c1"># 创建数据库时，生成的表名</span>
+        <span class="n">verbose_name</span> <span class="o">=</span> <span class="s2">&quot;省市县&quot;</span>
+        <span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="n">verbose_name</span>  <span class="c1"># 在django的admin中，显示的名称</span>
+</pre></div>
+	</div>
+	
+	       
+</div>
+
+		</div>
+		
+		<div class="sidebar">
+<div class="sidebarcategory">
+<h4>个人简介</h4>
+	<li><a href="#"><b>博主：</b>小旭旭</a></li>
+	<li><a href="#"><b>生日：</b>2000-07-24</a></li>
+	<li><a href="#"><b>性别：</b>公</a></li>
+	<li><a href="#"><b>爱人：</b>小雪雪</a></li>
+</div>
+
+<div class="sidebarpages">
+</div>
+
+<div class="sidebarcategory">
+<h4>相关连接</h4>
+	<li><a href="https://gitee.com/QiHanXiBei/projects" target="_blank">刘悦git</a></li>
+	<li><a href="https://v3u.cn/" target="_blank">刘悦技术博客</a></li>
+	<li><a href="https://gitee.com/eastside" target="_blank">Eastsidegit</a></li>
+    <li><a href="https://lienze.tech/" target="_blank">老渔夫吃虾米</a></li>
+    <li><a href="https://gitee.com/chen_meng-_xu/projects" target="_blank">陈梦旭git</a></li>
+
+</div>
+
+<div class="sidebarcategory">
+<h4>热点文档</h4>
+    <li><a href="http://localhost:8000/my_tow.html">Django--01简介</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--02虚拟环境</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--03环境的安装</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--04项目创建和应用</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--05pep8规范</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--06视图与URL映射</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--07常用字段</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--08Meta常用选项</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--0ORM操作</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--10Vue解决跨域问题</a></li>
+
+<!---->
+</div>		</div>
+		
+		<footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                磨练， <a href="http://getpelican.com/">使人难以忍受，</a>,
+                使人步履维艰， <a href="http://python.org">但它能使强者站得更挺，</a>,
+				走得更稳， <a href="http://frantic1048.com/">产生更强的斗志。</a>.
+                </address><!-- /#about -->
+        </footer><!-- /#contentinfo -->
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh_cn">
+<head>
+	<title>Django--07常用字段 | ge_ren_bo_ke</title>
+	<meta charset="utf-8" />
+    <meta name="author" content="chen_meng_xu">
+	<link rel="stylesheet" href="/theme/css/franticworld.css" type="text/css" />
+	<link href="/theme/css/pygments.css" rel="stylesheet">
+</head>
+<body background="/theme/img/pattern.png">
+		<div class="nav-banner">
+		<a href="">ge_ren_bo_ke</a>
+		</div>
+		
+		<div class="content">
+
+<div class="metabox">
+	<p class="metayear">小旭</p>
+	<p class="metaday">♥</p>
+	<p class="metayear">小雪</p>
+	<p class="metacategory">一辈子</p>
+</div>
+<div class="arcticlecontentbox">
+	<div class="articlecontent">
+		<a class="articletitle" href="/Diango07.html " >Django--07常用字段</a>
+		<h3>常用字段以及字段参数</h3>
+<h4>以下参数可用于所有字段，所有都是可选的</h4>
+<ul>
+<li>
+<p><strong>null参数，用法models.CharField(max_length=20, null=True)，表示字段值最大长度为20，并且可以为空。</strong></p>
+</li>
+<li>
+<p><strong>blank参数，用法models.CharField(max_length=20, blank=True), 表示字段值最大长度为20，并且表单验证可以为空。一般与null同时使用。</strong></p>
+</li>
+<li>
+<p><strong>choices参数</strong></p>
+</li>
+</ul>
+<p>用法：</p>
+<p>```python
+  from django.db import models</p>
+<p>class Person(models.Model):
+      """
+      性别: M代表男，F代表女
+      """
+      SEX_CHOICES = [
+          ("M", "Male"),
+          ("F", "Female")
+      ]
+      name = models.CharField(max_length=20)
+      gender = models.CharField(max_length=4, choices=SEX_CHOICES)
+  ```</p>
+<p>添加方法以及获取方法：</p>
+<p>```python
+  # 创建一个用户对象</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>p = Person.objects.create(name="张三", gender="M")
+  # 获取性别的代表字母
+p.gender
+  'M'
+  # 获取选项元组
+p.get_gender_display()
+  'Male'
+  ```</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<ul>
+<li>
+<p><strong>default参数，默认值，比如整数型字段models.IntegerField(default=0)， 给定一个默认值，可以在添加的时候，不需要马上就输入值</strong></p>
+</li>
+<li>
+<p><strong>primary_key参数，需要重设主键时，才需要添加此参数，如：商城订单，需要用订单号来做主键，可以添加此参数</strong></p>
+</li>
+<li>
+<p><strong>unique参数，唯一值，添加此参数以后，表示这个字段唯一，如：身份证号，手机号等</strong></p>
+</li>
+<li>
+<p><strong>verbose_name参数，该字段的可读名称。一般定义为中文。</strong></p>
+</li>
+</ul>
+<h4>常用字段</h4>
+<ul>
+<li><strong>CharField()字段</strong></li>
+</ul>
+<p><code>python
+  # max_length为必填项，主要目的是为了防止恶意操作
+  models.CharField(max_length=20)</code></p>
+<p>扩展：</p>
+<p>models.CharField  对应的是MySQL的varchar数据类型</p>
+<p><strong>char 和 varchar的区</strong>别 :</p>
+<p>char和varchar的共同点是存储数据的长度，不能 超过max_length限制，</p>
+<p>不同点是varchar根据数据实际长度存储，char按指定max_length的长度存储数据；前者更节省硬盘空间；</p>
+<ul>
+<li>
+<p><strong>TextFiled()：大文本字段，一般超过4000个字符时使用</strong></p>
+</li>
+<li>
+<p><strong>EmailField()字段</strong></p>
+</li>
+</ul>
+<p><code>python
+  # 一个带有检查 Email 合法性的 CharField
+  models.EmailField(max_length=50)  # 默认长度为254</code></p>
+<ul>
+<li><strong>BooleanField()字段</strong></li>
+</ul>
+<p>不能为空，可以设置default值，也可以设置null=True, blank=True</p>
+<ul>
+<li><strong>DateField()， 日期字段</strong></li>
+</ul>
+<p>auto_now=True,保存时自动设置该字段为当期日期，最后修改日期</p>
+<p>auto_now_add=True, 当该对象第一次被创建是自动设置该字段为现在日期，创建日期。</p>
+<ul>
+<li><strong>IntegerField()整型</strong></li>
+</ul>
+<p>不能为空，可以设置default值，也可以设置null=True, blank=True</p>
+<ul>
+<li><strong>FloatField()浮点型</strong></li>
+</ul>
+<p>不能为空，可以设置default值，也可以设置null=True, blank=True</p>
+<ul>
+<li>
+<p><strong>ImageField()图像字段</strong></p>
+</li>
+<li>
+<p>height_field、width_field：如果提供这两个参数，则图片将按提供的高度和宽度规格保存。</p>
+</li>
+<li>该字段要求 Python Imaging 库Pillow。</li>
+<li>会检查上传的对象是否是一个合法图片。</li>
+</ul>
+<p>```python
+  # settings里面设置
+  MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+  MEDIA_URL = '/media/'</p>
+<p># urls.py文件添加文件的访问路径
+  from mysite.settins import MEDIA_ROOT   # 导入settings
+  from django.views.static import serve
+  from django.urls import path, include</p>
+<p>urlpatterns = [
+      path('admin/', admin.site.urls),
+      path('polls/', include('polls.urls')), 
+      url(r'^media/(?P<path>.*)/$', serve, {"document_root": MEDIA_ROOT}), 
+  ] </p>
+<p># models.py中添加字段
+  from django.db import models</p>
+<p>class Person(models.Model):
+      """
+      性别: M代表男，F代表女
+      """
+      SEX_CHOICES = [
+          ("M", "Male"),
+          ("F", "Female")
+      ]
+      name = models.CharField(max_length=20)
+      gender = models.CharField(max_length=4, choices=SEX_CHOICES)
+      myfile = models.ImageField(upload_to='detail')
+  ```</p>
+<ul>
+<li><strong>FileField(upload_to=None)</strong></li>
+</ul>
+<p>upload_to：一个用于保存上传文件的本地文件系统路径，该路径由 MEDIA_ROOT 中设置</p>
+<p>这个字段不能设置primary_key和unique选项.在数据库中存储类型是varchar，默认最大长度为100</p>
+<h3>外键</h3>
+<ul>
+<li><strong>ForeignKey(其它表，on_delete=models.CASCADE)一对多外键（重点）</strong></li>
+</ul>
+<p>第一参数是其它的表，也可以是自己。</p>
+<p>```python
+  from django.db import models</p>
+<p>class AreaInfo(models.Model):
+      """
+      省市级联
+      """
+      area_name = models.CharField(max_length=20)
+      pid = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True)
+  ```</p>
+<p><strong>注：这里的pid必须默认允许为空，验证允许为空。</strong></p>
+<p>on_delete当删除外键引用时，是否删除下级。models.CASCADE为联级删除，modesl.DO_NOTHING为不采取任何措施。</p>
+<p>related_name等同于重命名，当在一个表中，要同时关联同一个外键时，需要使用related_name</p>
+<p>```python
+  from django.db import models</p>
+<p>class AreaInfo(models.Model):
+      """
+      省市级联
+      """
+      area_name = models.CharField(max_length=20)
+      pid = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True)</p>
+<p>class Person(models.Model):
+      """
+      性别
+      """
+      SEX_CHOICES = [
+          ("M", "Male"),
+          ("F", "Female")
+      ]
+      name = models.CharField(max_length=20)
+      gender = models.CharField(max_length=4, choices=SEX_CHOICES)</p>
+<p>class Address(models.Model):
+      """
+      用户的详细地址
+      """
+      person = models.ForeignKey(Person, on_delete=models.CASCADE)
+      province = models.ForeignKey(AreaInfo, on_delete=models.CASCADE, related_name="province", verbose_name="省")
+      town = models.ForeignKey(AreaInfo, on_delete=models.CASCADE, related_name="town", verbose_name="市")
+      city = models.ForeignKey(AreaInfo, on_delete=models.CASCADE, related_name="city", verbose_name="县") 
+  ```</p>
+<ul>
+<li><strong>ManyToManyField()多对多关系</strong></li>
+</ul>
+<p>多对多关系，需要一个位置参数，其它参数与一对多相同。</p>
+<p>举例：</p>
+<p>```python
+  # 服装的尺寸、颜色
+  class Size(models.Model):
+      s_name = models.CharField(max_length=10, verbose_name='尺寸')</p>
+<div class="highlight"><pre><span></span>  <span class="nv">def</span> <span class="nv">__str__</span><span class="ss">(</span><span class="nv">self</span><span class="ss">)</span>:
+      <span class="k">return</span> <span class="nv">self</span>.<span class="nv">s_name</span>
+</pre></div>
+
+
+<p>class Color(models.Model):
+      color_name = models.CharField(max_length=10, verbose_name='颜色')</p>
+<div class="highlight"><pre><span></span>  <span class="nv">def</span> <span class="nv">__str__</span><span class="ss">(</span><span class="nv">self</span><span class="ss">)</span>:
+      <span class="k">return</span> <span class="nv">self</span>.<span class="nv">color_name</span>
+</pre></div>
+
+
+<p>class Goods(models.Model):
+      g_name = models.CharField(max_length=100, verbose_name='商品名称')
+      price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='现价')
+      color = models.ManyToManyField(to="Color")
+      # 与尺码建立多对多关系
+      size = models.ManyToManyField(to="Size")</p>
+<div class="highlight"><pre><span></span>  <span class="nv">def</span> <span class="nv">__str__</span><span class="ss">(</span><span class="nv">self</span><span class="ss">)</span>:
+      <span class="k">return</span> <span class="nv">self</span>.<span class="nv">g_name</span>
+</pre></div>
+
+
+<p>```</p>
+<ul>
+<li><strong>OneToOneField()一对一关系</strong></li>
+</ul>
+<p>```python
+  # 一对一关系
+  # 银行账户(Account)和联系人(Contact)，一个银行账户对应一个联系人，而一个联系人也只对应一个账户
+  class Account(models.Model):
+      """
+      账户
+      """
+      username = models.CharField(max_length=20, null=True, blank=True, verbose_name="用户名")
+      password = models.CharField(max_length=20, null=True, blank=True, verbose_name="密码")
+      register_date = models.DateTimeField(auto_now_add=True, null=True, blank=True, verbose_name="注册时间")</p>
+<p>class Contact(models.Model):
+      """
+      联系人
+      """
+      address = models.CharField(max_length=50, null=True, blank=True, verbose_name="联系人地址")
+      account = models.OneToOneField(Account, on_delete=models.CASCADE)
+  ```</p>
+	</div>
+	
+	       
+</div>
+
+		</div>
+		
+		<div class="sidebar">
+<div class="sidebarcategory">
+<h4>个人简介</h4>
+	<li><a href="#"><b>博主：</b>小旭旭</a></li>
+	<li><a href="#"><b>生日：</b>2000-07-24</a></li>
+	<li><a href="#"><b>性别：</b>公</a></li>
+	<li><a href="#"><b>爱人：</b>小雪雪</a></li>
+</div>
+
+<div class="sidebarpages">
+</div>
+
+<div class="sidebarcategory">
+<h4>相关连接</h4>
+	<li><a href="https://gitee.com/QiHanXiBei/projects" target="_blank">刘悦git</a></li>
+	<li><a href="https://v3u.cn/" target="_blank">刘悦技术博客</a></li>
+	<li><a href="https://gitee.com/eastside" target="_blank">Eastsidegit</a></li>
+    <li><a href="https://lienze.tech/" target="_blank">老渔夫吃虾米</a></li>
+    <li><a href="https://gitee.com/chen_meng-_xu/projects" target="_blank">陈梦旭git</a></li>
+
+</div>
+
+<div class="sidebarcategory">
+<h4>热点文档</h4>
+    <li><a href="http://localhost:8000/my_tow.html">Django--01简介</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--02虚拟环境</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--03环境的安装</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--04项目创建和应用</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--05pep8规范</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--06视图与URL映射</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--07常用字段</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--08Meta常用选项</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--0ORM操作</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--10Vue解决跨域问题</a></li>
+
+<!---->
+</div>		</div>
+		
+		<footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                磨练， <a href="http://getpelican.com/">使人难以忍受，</a>,
+                使人步履维艰， <a href="http://python.org">但它能使强者站得更挺，</a>,
+				走得更稳， <a href="http://frantic1048.com/">产生更强的斗志。</a>.
+                </address><!-- /#about -->
+        </footer><!-- /#contentinfo -->
+</body>
+</html>

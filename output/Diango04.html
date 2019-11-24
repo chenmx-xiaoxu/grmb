@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh_cn">
+<head>
+	<title>Django--04项目创建和应用创建 | ge_ren_bo_ke</title>
+	<meta charset="utf-8" />
+    <meta name="author" content="chen_meng_xu">
+	<link rel="stylesheet" href="/theme/css/franticworld.css" type="text/css" />
+	<link href="/theme/css/pygments.css" rel="stylesheet">
+</head>
+<body background="/theme/img/pattern.png">
+		<div class="nav-banner">
+		<a href="">ge_ren_bo_ke</a>
+		</div>
+		
+		<div class="content">
+
+<div class="metabox">
+	<p class="metayear">小旭</p>
+	<p class="metaday">♥</p>
+	<p class="metayear">小雪</p>
+	<p class="metacategory">一辈子</p>
+</div>
+<div class="arcticlecontentbox">
+	<div class="articlecontent">
+		<a class="articletitle" href="/Diango04.html " >Django--04项目创建和应用创建</a>
+		<h3>创建第一个django项目</h3>
+<h3>例用命令创建项目</h3>
+<h5>1、进入虚拟环境</h5>
+<div class="highlight"><pre><span></span><span class="n">workon</span> <span class="n">my_env</span>
+</pre></div>
+
+
+<h5>2、cd到要创建项目的目录下，创建django项目</h5>
+<p>进入到E:\django_code下，创建django项目</p>
+<p><img alt="cmd切换目录" src=".\django相关截图\cmd切换目录.png"></p>
+<h5>3、使用命令，创建django项目 django-admin startproject 项目名</h5>
+<p><img alt="使用命令创建django项目" src=".\django相关截图\使用命令创建django项目.png"></p>
+<p><strong>创建项目以后，生成以下文件</strong></p>
+<p><img alt="django项目目录结构" src=".\django相关截图\django项目目录结构.png"></p>
+<p><strong>修改settings文件以下行：</strong></p>
+<div class="highlight"><pre><span></span><span class="n">ALLOWED_HOSTS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span>  <span class="c1"># 允许的主机后面加 * 或者加对应的IP</span>
+<span class="n">LANGUAGE_CODE</span> <span class="o">=</span> <span class="s1">&#39;zh-hans&#39;</span>  <span class="c1"># 语言编码改为zh-hans</span>
+<span class="n">TIME_ZONE</span> <span class="o">=</span> <span class="s1">&#39;Asia/Shanghai&#39;</span>  <span class="c1"># 时区必变  Asia/Shanghai</span>
+<span class="n">USE_TZ</span> <span class="o">=</span> <span class="bp">False</span>  <span class="c1"># 改为False </span>
+</pre></div>
+
+
+<h5>4、创建app  cd进入项目目录，例如：cd mysite</h5>
+<p><img alt="使用命令创建app" src=".\django相关截图\使用命令创建app.png"></p>
+<p><strong>app创建完成以后，修改settings文件以下内容</strong></p>
+<p><img alt="settings安装app" src=".\django相关截图\settings安装app.png"></p>
+<p><strong>修改urls内容（作为跳转使用，方便以后管理）</strong></p>
+<p>​        在我们的项目中，不可能只有一个<code>app</code>，如果把所有的<code>app</code>的<code>views</code>中的视图都放在<code>urls.py</code>中进行映射，肯定会让代码显得非常乱。因此<code>django</code>给我们提供了一个方法，可以在<code>app</code>内部包含自己的<code>url</code>匹配规则，而在项目的<code>urls.py</code>中再统一包含这个<code>app</code>的<code>urls</code>。使用这个技术需要借助<code>include</code>函数。示例代码如下：</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
+<span class="kn">from</span> <span class="nn">django.urls</span> <span class="kn">import</span> <span class="n">path</span><span class="p">,</span> <span class="n">include</span>
+
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;admin/&#39;</span><span class="p">,</span> <span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">urls</span><span class="p">),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;polls/&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s1">&#39;polls.urls&#39;</span><span class="p">)),</span>  <span class="c1"># 添加行备注，以便于区分</span>
+<span class="p">]</span>
+</pre></div>
+
+
+<h3>使用pycharm创建项目</h3>
+<p><strong>第一步，file-----&gt;New Project</strong></p>
+<p><img alt="pycharm创建项目1" src=".\django相关截图\pycharm创建项目1.png"></p>
+<p><strong>第二步, 选择django创建的位置</strong></p>
+<p><img alt="pycharm创建项目2" src="D:\积云教育\django资料\django相关截图\pycharm创建项目2.png"></p>
+<p><strong>第三步</strong></p>
+<p><img alt="pycharm创建项目3" src=".\django相关截图\pycharm创建项目3.png"></p>
+<p><strong>第四步</strong></p>
+<p><img alt="pycharm创建项目4" src=".\django相关截图\pycharm创建项目4.png"></p>
+<p><strong>第五步</strong></p>
+<p><img alt="pycharm创建项目5" src=".\django相关截图\pycharm创建项目5.png"></p>
+<p><strong>第六步</strong></p>
+<p><img alt="pycharm创建项目6" src=".\django相关截图\pycharm创建项目6.png"></p>
+<p><strong>第七步</strong></p>
+<p><img alt="pycharm创建项目7" src=".\django相关截图\pycharm创建项目7.png"></p>
+<p><strong>第八步</strong></p>
+<p><img alt="pycharm创建项目完成" src=".\django相关截图\pycharm创建项目完成.png"></p>
+	</div>
+	
+	       
+</div>
+
+		</div>
+		
+		<div class="sidebar">
+<div class="sidebarcategory">
+<h4>个人简介</h4>
+	<li><a href="#"><b>博主：</b>小旭旭</a></li>
+	<li><a href="#"><b>生日：</b>2000-07-24</a></li>
+	<li><a href="#"><b>性别：</b>公</a></li>
+	<li><a href="#"><b>爱人：</b>小雪雪</a></li>
+</div>
+
+<div class="sidebarpages">
+</div>
+
+<div class="sidebarcategory">
+<h4>相关连接</h4>
+	<li><a href="https://gitee.com/QiHanXiBei/projects" target="_blank">刘悦git</a></li>
+	<li><a href="https://v3u.cn/" target="_blank">刘悦技术博客</a></li>
+	<li><a href="https://gitee.com/eastside" target="_blank">Eastsidegit</a></li>
+    <li><a href="https://lienze.tech/" target="_blank">老渔夫吃虾米</a></li>
+    <li><a href="https://gitee.com/chen_meng-_xu/projects" target="_blank">陈梦旭git</a></li>
+
+</div>
+
+<div class="sidebarcategory">
+<h4>热点文档</h4>
+    <li><a href="http://localhost:8000/my_tow.html">Django--01简介</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--02虚拟环境</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--03环境的安装</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--04项目创建和应用</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--05pep8规范</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--06视图与URL映射</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--07常用字段</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--08Meta常用选项</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--0ORM操作</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--10Vue解决跨域问题</a></li>
+
+<!---->
+</div>		</div>
+		
+		<footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                磨练， <a href="http://getpelican.com/">使人难以忍受，</a>,
+                使人步履维艰， <a href="http://python.org">但它能使强者站得更挺，</a>,
+				走得更稳， <a href="http://frantic1048.com/">产生更强的斗志。</a>.
+                </address><!-- /#about -->
+        </footer><!-- /#contentinfo -->
+</body>
+</html>

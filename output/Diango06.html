@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh_cn">
+<head>
+	<title>Django--06视图与URL映射 | ge_ren_bo_ke</title>
+	<meta charset="utf-8" />
+    <meta name="author" content="chen_meng_xu">
+	<link rel="stylesheet" href="/theme/css/franticworld.css" type="text/css" />
+	<link href="/theme/css/pygments.css" rel="stylesheet">
+</head>
+<body background="/theme/img/pattern.png">
+		<div class="nav-banner">
+		<a href="">ge_ren_bo_ke</a>
+		</div>
+		
+		<div class="content">
+
+<div class="metabox">
+	<p class="metayear">小旭</p>
+	<p class="metaday">♥</p>
+	<p class="metayear">小雪</p>
+	<p class="metacategory">一辈子</p>
+</div>
+<div class="arcticlecontentbox">
+	<div class="articlecontent">
+		<a class="articletitle" href="/Diango06.html " >Django--06视图与URL映射</a>
+		<h3>视图与URL映射</h3>
+<h4>视图</h4>
+<p>​        视图一般都写在<code>app</code>的<code>views.py</code>中。并且视图的第一个参数永远都是<code>request</code>（一个HttpRequest）对象。这个对象存储了请求过来的所有信息，包括携带的参数以及一些头部信息等。在视图中，一般是完成逻辑相关的操作。比如这个请求是添加一篇博客，那么可以通过request来接收到这些数据，然后存储到数据库中，最后再把执行的结果返回给浏览器。视图函数的返回结果必须是<code>HttpResponseBase</code>对象或者子类的对象。示例代码如下：</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+
+
+<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    @ author: XXX</span>
+<span class="sd">    @ date: 2019-8-27</span>
+<span class="sd">    跳转到首页</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s2">&quot;这里是首页&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><strong>注：author、date多人开发，有利于代码管理</strong></p>
+<h4>带参数的视图</h4>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+
+
+<span class="k">def</span> <span class="nf">book_info</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">book_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    @ author: XXX</span>
+<span class="sd">    @ date: 2019-8-27</span>
+<span class="sd">    通过bookid获取书藉的信息</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;您输入的书籍的id是：{}&quot;</span> <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">book_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+
+
+<h4>URL映射</h4>
+<p>​        视图写完后，要与URL进行映射，也即用户在浏览器中输入什么<code>url</code>的时候可以请求到这个视图函数。在用户输入了某个<code>url</code>，请求到我们的网站的时候，<code>django</code>会从项目的<code>urls.py</code>文件中寻找对应的视图。在<code>urls.py</code>文件中有一个<code>urlpatterns</code>变量，以后<code>django</code>就会从这个变量中读取所有的匹配规则。匹配规则需要使用<code>django.urls.path</code>函数进行包裹，这个函数会根据传入的参数返回<code>URLPattern</code>或者是<code>URLResolver</code>的对象。示例代码如下：</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.urls</span> <span class="kn">import</span> <span class="n">path</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">views</span>
+<span class="n">app_name</span> <span class="o">=</span> <span class="s2">&quot;polls&quot;</span>
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">path</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;polls&quot;</span><span class="p">),</span>  <span class="c1"># 跳转到首页</span>
+<span class="p">]</span>
+</pre></div>
+
+
+<p><strong>注：urlpatterns的列表中不只是一个url跳转路径，添加行注释，便于管理url的跳转定向。</strong></p>
+<h4>带参数的URL</h4>
+<p>​        有时候，<code>url</code>中包含了一些参数需要动态调整。比如简书某篇文章的详情页的url，是<code>https://www.jianshu.com/p/a5aab9c4978e</code>后面的<code>a5aab9c4978e</code>就是这篇文章的<code>id</code>，那么简书的文章详情页面的url就可以写成<code>https://www.jianshu.com/p/&lt;id&gt;</code>，其中id就是文章的id。那么如何在<code>django</code>中实现这种需求呢。这时候我们可以在<code>path</code>函数中，使用尖括号的形式来定义一个参数。比如我现在想要获取一本书籍的详细信息，那么应该在<code>url</code>中指定这个参数。示例代码如下：</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.urls</span> <span class="kn">import</span> <span class="n">path</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">views</span>
+<span class="n">app_name</span> <span class="o">=</span> <span class="s2">&quot;polls&quot;</span>
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">path</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;polls&quot;</span><span class="p">),</span>  <span class="c1"># 跳转到首页</span>
+    <span class="n">path</span><span class="p">(</span><span class="s2">&quot;book_info/&lt;book_id&gt;&quot;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">book_info</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;book_info&quot;</span><span class="p">),</span>  <span class="c1"># 通过ID获取书籍信息</span>
+<span class="p">]</span>
+</pre></div>
+	</div>
+	
+	       
+</div>
+
+		</div>
+		
+		<div class="sidebar">
+<div class="sidebarcategory">
+<h4>个人简介</h4>
+	<li><a href="#"><b>博主：</b>小旭旭</a></li>
+	<li><a href="#"><b>生日：</b>2000-07-24</a></li>
+	<li><a href="#"><b>性别：</b>公</a></li>
+	<li><a href="#"><b>爱人：</b>小雪雪</a></li>
+</div>
+
+<div class="sidebarpages">
+</div>
+
+<div class="sidebarcategory">
+<h4>相关连接</h4>
+	<li><a href="https://gitee.com/QiHanXiBei/projects" target="_blank">刘悦git</a></li>
+	<li><a href="https://v3u.cn/" target="_blank">刘悦技术博客</a></li>
+	<li><a href="https://gitee.com/eastside" target="_blank">Eastsidegit</a></li>
+    <li><a href="https://lienze.tech/" target="_blank">老渔夫吃虾米</a></li>
+    <li><a href="https://gitee.com/chen_meng-_xu/projects" target="_blank">陈梦旭git</a></li>
+
+</div>
+
+<div class="sidebarcategory">
+<h4>热点文档</h4>
+    <li><a href="http://localhost:8000/my_tow.html">Django--01简介</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--02虚拟环境</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--03环境的安装</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--04项目创建和应用</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--05pep8规范</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--06视图与URL映射</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--07常用字段</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--08Meta常用选项</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--0ORM操作</a></li>
+    <li><a href="http://localhost:8000/my_tow.html">Django--10Vue解决跨域问题</a></li>
+
+<!---->
+</div>		</div>
+		
+		<footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                磨练， <a href="http://getpelican.com/">使人难以忍受，</a>,
+                使人步履维艰， <a href="http://python.org">但它能使强者站得更挺，</a>,
+				走得更稳， <a href="http://frantic1048.com/">产生更强的斗志。</a>.
+                </address><!-- /#about -->
+        </footer><!-- /#contentinfo -->
+</body>
+</html>
